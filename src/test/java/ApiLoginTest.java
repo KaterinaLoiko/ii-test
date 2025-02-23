@@ -1,6 +1,4 @@
 import io.qameta.allure.*;
-import io.qameta.allure.internal.shadowed.jackson.core.JsonProcessingException;
-import io.qameta.allure.internal.shadowed.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.Response;
@@ -8,8 +6,6 @@ import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
@@ -22,6 +18,15 @@ public class ApiLoginTest {
     @BeforeAll
     static void setUp() {
         RestAssured.baseURI = "https://org.1-ofd.ru";
+    }
+
+    @Step("Создание спецификации запроса")
+    public static RequestSpecification postSpec(String basePath, String body) {
+        return new RequestSpecBuilder()
+                .setBody(body)
+                .setBasePath(basePath)
+                .setContentType(JSON)
+                .build();
     }
 
     @Test
@@ -59,20 +64,10 @@ public class ApiLoginTest {
     @Description("Этот тест проверяет, что возможен логин")
     @Severity(SeverityLevel.BLOCKER)
     public void testLogin() {
-        String body = String.format("{\"login\":\"%s\",\"password\":\"%s\",\"rememberme\":%s}","saperew170@ahaks.com", "8f2bc376", true);
+        String body = String.format("{\"login\":\"%s\",\"password\":\"%s\",\"rememberme\":%s}", "saperew170@ahaks.com", "8f2bc376", true);
         Response response = given()
-                .spec(postSpec("https://org.1-ofd.ru/api/cp-core/user", "/login", body))
+                .spec(postSpec("/api/cp-core/use/login", body))
                 .post();
         response.then().statusCode(200);
-    }
-
-    @Step("Создание спецификации запроса")
-    public static RequestSpecification postSpec(String url, String basePath, String body) {
-        return new RequestSpecBuilder()
-                .setBody(body)
-                .setBaseUri(url)
-                .setBasePath(basePath)
-                .setContentType(JSON)
-                .build();
     }
 }
