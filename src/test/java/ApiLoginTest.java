@@ -64,7 +64,7 @@ public class ApiLoginTest {
     @Description("Этот тест проверяет, что возможен логин")
     @Severity(SeverityLevel.BLOCKER)
     public void testLogin() {
-        String body = String.format("{\"login\":\"%s\",\"password\":\"%s\",\"rememberme\":%s}", "saperew170@ahaks.com", "8f2bc376", true);
+        String body = String.format("{\"login\":\"%s\",\"password\":\"%s\",\"rememberme\":true}", "saperew170@ahaks.com", "8f2bc376");
         Response response = given()
                 .spec(postSpec("/api/cp-core/use/login", body))
                 .post();
