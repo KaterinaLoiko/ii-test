@@ -1,11 +1,14 @@
 import io.qameta.allure.*;
 import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.containsString;
 
 @Epic("API тесты")
@@ -15,6 +18,15 @@ public class ApiLoginTest {
     @BeforeAll
     static void setUp() {
         RestAssured.baseURI = "https://org.1-ofd.ru";
+    }
+
+    @Step("Создание спецификации запроса")
+    public static RequestSpecification postSpec(String basePath, String body) {
+        return new RequestSpecBuilder()
+                .setBody(body)
+                .setBasePath(basePath)
+                .setContentType(JSON)
+                .build();
     }
 
     @Test
@@ -45,5 +57,17 @@ public class ApiLoginTest {
                 .then()
                 .statusCode(200)
                 .header("Content-Type", containsString("text/html"));
+    }
+
+    @Test
+    @DisplayName("Проверка логина")
+    @Description("Этот тест проверяет, что возможен логин")
+    @Severity(SeverityLevel.BLOCKER)
+    public void testLogin() {
+        String body = String.format("{\"login\":\"%s\",\"password\":\"%s\",\"rememberme\":true}", "saperew170@ahaks.com", "8f2bc376");
+        Response response = given()
+                .spec(postSpec("/api/cp-core/use/login", body))
+                .post();
+        response.then().statusCode(200);
     }
 }
