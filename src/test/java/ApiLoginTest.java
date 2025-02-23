@@ -66,6 +66,7 @@ public class ApiLoginTest {
         response.then().statusCode(200);
     }
 
+    @Step("Создание спецификации запроса")
     public static RequestSpecification postSpec(String url, String basePath, String body) {
         return new RequestSpecBuilder()
                 .setBody(body)
