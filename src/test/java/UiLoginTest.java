@@ -4,8 +4,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.WebDriverRunner.url;
+import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -36,7 +38,9 @@ public class UiLoginTest extends BaseTest {
     @Severity(SeverityLevel.NORMAL)
     public void testCorrectEmailInputAndDisplay() {
         String email = "test@example.com";
-        loginPage.setEmail(email);
+        step("Ввод значения в поле электронной почты", () -> {
+            loginPage.setEmail(email);
+        });
         assertEquals(email, loginPage.getEmail().getValue());
     }
 
@@ -47,9 +51,12 @@ public class UiLoginTest extends BaseTest {
     public void testLoginWithCorrectEmail() {
         loginPage.setEmail(LOGIN_EMAIL);
         loginPage.clickContinue();
-        loginPage.password().shouldBe(visible);
-        String currentUrl = url();
-        assertTrue(currentUrl.contains("/registration/login-password"));
+
+        step("Проверка перехода на страницу ввода пароля", () -> {
+            loginPage.password().shouldBe(visible);
+            String currentUrl = url();
+            assertTrue(step("Current URL should contain /registration/login-password", () -> currentUrl.contains("/registration/login-password")));
+        });
     }
 
     @Test
@@ -57,10 +64,12 @@ public class UiLoginTest extends BaseTest {
     @Description("Этот тест проверяет, что при вводе email несуществующего пользователя появляется сообщение об ошибке \"Пользователь не найден\"")
     @Severity(SeverityLevel.NORMAL)
     public void testLoginWithIncorrectEmail() {
-        loginPage.setEmail("saperew170@ahaks.co");
-        loginPage.clickContinue();
-        loginPage.errorMessage().shouldBe(visible);
-        assertEquals("Пользователь не найден", loginPage.errorMessage().getText());
+        step("Ввод значения в поле электронной почты и нажатие Продолжить", () -> {
+            loginPage.setEmail("saperew170@ahaks.co");
+            loginPage.clickContinue();
+        });
+        loginPage.errorMessage().shouldBe(visible)
+                .shouldHave(text("Пользователь не найден"));
     }
 
     @Test
@@ -68,8 +77,11 @@ public class UiLoginTest extends BaseTest {
     @Description("Этот тест проверяет, что при попытке входа без ввода email цвет рамки у поля email стал красным.")
     @Severity(SeverityLevel.NORMAL)
     public void testLoginWithEmptyEmail() {
-        loginPage.clickContinue();
-        loginPage.getEmail().shouldBe(Condition.cssValue("border", "1px solid rgb(255, 66, 88)"));
+        step("Нажатие Продолжить без ввода значения в поле электронной почты", () -> {
+            loginPage.clickContinue();
+        });
+        loginPage.getEmail()
+                .shouldHave(Condition.cssValue("border", "1px solid rgb(255, 66, 88)"));
     }
 
     @Test
@@ -77,13 +89,19 @@ public class UiLoginTest extends BaseTest {
     @Description("Этот тест проверяет, что после успешного входа пользователь перенаправляется на страницу добавления организации")
     @Severity(SeverityLevel.CRITICAL)
     public void testSuccessfulLogin() {
-        loginPage.setEmail(LOGIN_EMAIL);
-        loginPage.clickContinue();
-        loginPage.setPassword("8f2bc376");
-        loginPage.clickContinue();
-        new AddOrgPage().getAddOrganizationButton().shouldBe(visible);
-        String currentUrl = url();
-        assertTrue(currentUrl.contains("/user-account-confirmed"));
+        step("Ввод электронной почты", () -> {
+            loginPage.setEmail(LOGIN_EMAIL);
+            loginPage.clickContinue();
+        });
+        step("Ввод пароля", () -> {
+            loginPage.setPassword("8f2bc376");
+            loginPage.clickContinue();
+        });
+        step("Проверка, что перешли на окно добавления организации", () -> {
+            new AddOrgPage().getAddOrganizationButton().shouldBe(visible);
+            String currentUrl = url();
+            assertTrue(currentUrl.contains("/user-account-confirmed"));
+        });
     }
 
     @Test
@@ -91,12 +109,16 @@ public class UiLoginTest extends BaseTest {
     @Description("Этот тест проверяет, что при попытке входа с неверным паролем появляется ошибка.")
     @Severity(SeverityLevel.NORMAL)
     public void testLoginWithWrongPassword() {
-        loginPage.setEmail(LOGIN_EMAIL);
-        loginPage.clickContinue();
-        loginPage.setPassword("ghdsjgd");
-        loginPage.clickContinue();
-        loginPage.errorMessage().shouldBe(visible);
-        assertEquals("Неверный логин или пароль", loginPage.errorMessage().getText());
+        step("Ввод электронной почты", () -> {
+            loginPage.setEmail(LOGIN_EMAIL);
+            loginPage.clickContinue();
+        });
+        step("Ввод неверного пароля", () -> {
+            loginPage.setPassword("ghdsjgd");
+            loginPage.clickContinue();
+        });
+        loginPage.errorMessage().shouldBe(visible)
+                .shouldHave(text("Неверный логин или пароль"));
     }
 }
 
