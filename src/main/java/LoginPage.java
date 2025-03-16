@@ -2,7 +2,6 @@ import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
-import io.qameta.allure.*;
 
 public class LoginPage {
 
@@ -15,12 +14,10 @@ public class LoginPage {
         open("https://org.1-ofd.ru/registration/login-mail");
     }
 
-    @Step("Установка электронной почты")
     public void setEmail(String email) {
         this.email.setValue(email);
     }
 
-    @Step("Нажать Продолжить")
     public void clickContinue() {
         continueButton.click();
     }
@@ -37,7 +34,6 @@ public class LoginPage {
         return password;
     }
 
-    @Step("Установка поля Пароль")
     public void setPassword(String password) {
         this.password.setValue(password);
     }
