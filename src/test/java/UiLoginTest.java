@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.WebDriverRunner.url;
+import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -48,9 +49,12 @@ public class UiLoginTest extends BaseTest {
     public void testLoginWithCorrectEmail() {
         loginPage.setEmail(LOGIN_EMAIL);
         loginPage.clickContinue();
-        loginPage.password().shouldBe(visible);
-        String currentUrl = url();
-        assertTrue(currentUrl.contains("/registration/login-password"));
+
+        step("Проверка перехода на страницу ввода пароля", () -> {
+            loginPage.password().shouldBe(visible);
+            String currentUrl = url();
+            assertTrue(step("Current URL should contain /registration/login-password", () -> currentUrl.contains("/registration/login-password")));
+        });
     }
 
     @Test
@@ -83,9 +87,11 @@ public class UiLoginTest extends BaseTest {
         loginPage.clickContinue();
         loginPage.setPassword("8f2bc376");
         loginPage.clickContinue();
-        new AddOrgPage().getAddOrganizationButton().shouldBe(visible);
-        String currentUrl = url();
-        assertTrue(currentUrl.contains("/user-account-confirmed"));
+        step("Проверка, что перешли на окно добавления организации", () -> {
+            new AddOrgPage().getAddOrganizationButton().shouldBe(visible);
+            String currentUrl = url();
+            assertTrue(currentUrl.contains("/user-account-confirmed"));
+        });
     }
 
     @Test

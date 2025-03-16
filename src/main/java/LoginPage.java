@@ -14,10 +14,12 @@ public class LoginPage {
         open("https://org.1-ofd.ru/registration/login-mail");
     }
 
+    @Step("Установка электронной почты")
     public void setEmail(String email) {
         this.email.setValue(email);
     }
 
+    @Step("Нажать Продолжить")
     public void clickContinue() {
         continueButton.click();
     }
@@ -34,6 +36,7 @@ public class LoginPage {
         return password;
     }
 
+    @Step("Установка поля Пароль")
     public void setPassword(String password) {
         this.password.setValue(password);
     }
