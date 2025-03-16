@@ -16,7 +16,7 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.3'
     implementation 'com.codeborne:selenide:7.7.3'
     testImplementation 'io.qameta.allure:allure-junit5:2.29.1'
-    testImplementation 'io.rest-assured:rest-assured:4.4.0'
+    implementation 'io.rest-assured:rest-assured:4.4.0'
     testImplementation 'org.hamcrest:hamcrest:2.2'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
 }
