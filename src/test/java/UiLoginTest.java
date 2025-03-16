@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.WebDriverRunner.url;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -59,8 +60,8 @@ public class UiLoginTest extends BaseTest {
     public void testLoginWithIncorrectEmail() {
         loginPage.setEmail("saperew170@ahaks.co");
         loginPage.clickContinue();
-        loginPage.errorMessage().shouldBe(visible);
-        assertEquals("Пользователь не найден", loginPage.errorMessage().getText());
+        loginPage.errorMessage().shouldBe(visible)
+                .shouldHave(text("Пользователь не найден"));
     }
 
     @Test
@@ -69,7 +70,8 @@ public class UiLoginTest extends BaseTest {
     @Severity(SeverityLevel.NORMAL)
     public void testLoginWithEmptyEmail() {
         loginPage.clickContinue();
-        loginPage.getEmail().shouldBe(Condition.cssValue("border", "1px solid rgb(255, 66, 88)"));
+        loginPage.getEmail()
+                .shouldHave(Condition.cssValue("border", "1px solid rgb(255, 66, 88)"));
     }
 
     @Test
@@ -95,8 +97,8 @@ public class UiLoginTest extends BaseTest {
         loginPage.clickContinue();
         loginPage.setPassword("ghdsjgd");
         loginPage.clickContinue();
-        loginPage.errorMessage().shouldBe(visible);
-        assertEquals("Неверный логин или пароль", loginPage.errorMessage().getText());
+        loginPage.errorMessage().shouldBe(visible)
+                .shouldHave(text("Неверный логин или пароль"));
     }
 }
 

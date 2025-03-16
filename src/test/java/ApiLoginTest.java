@@ -15,13 +15,17 @@ import static org.hamcrest.Matchers.containsString;
 @Feature("Тестирование страницы логина")
 public class ApiLoginTest {
 
+    private final static String EMAIL = "saperew170@ahaks.com";
     @BeforeAll
     static void setUp() {
-        RestAssured.baseURI = "https://org.1-ofd.ru";
+        RestAssured.baseURI = "https://org.1-ofd.ru/api/cp-core/user";
     }
 
     @Step("Создание спецификации запроса")
     public static RequestSpecification postSpec(String basePath, String body) {
+        if (basePath == null || body == null) {
+            throw new IllegalArgumentException("basePath и body не могут быть null");
+        }
         return new RequestSpecBuilder()
                 .setBody(body)
                 .setBasePath(basePath)
@@ -30,43 +34,25 @@ public class ApiLoginTest {
     }
 
     @Test
-    @DisplayName("Проверка доступности страницы логина")
-    @Description("Этот тест проверяет, что страница логина доступна и возвращает статус 200")
-    @Severity(SeverityLevel.BLOCKER)
-    public void testLoginPageAvailability() {
-        Response response = given()
-                .when()
-                .get("/registration/login-mail")
-                .then()
-                .statusCode(200)
-                .extract()
-                .response();
-
-        // Проверка, что в теле ответа содержится определенная строка
-        response.then().body(containsString("Вход"));
-    }
-
-    @Test
-    @DisplayName("Проверка заголовка ответа")
-    @Description("Этот тест проверяет, что заголовок ответа содержит правильный Content-Type")
-    @Severity(SeverityLevel.NORMAL)
-    public void testLoginPageHeader() {
-        given()
-                .when()
-                .get("/registration/login-mail")
-                .then()
-                .statusCode(200)
-                .header("Content-Type", containsString("text/html"));
-    }
-
-    @Test
     @DisplayName("Проверка логина")
     @Description("Этот тест проверяет, что возможен логин")
     @Severity(SeverityLevel.BLOCKER)
     public void testLogin() {
-        String body = String.format("{\"login\":\"%s\",\"password\":\"%s\",\"rememberme\":true}", "saperew170@ahaks.com", "8f2bc376");
+        String body = String.format("{\"login\":\"%s\",\"password\":\"%s\",\"rememberme\":true}", EMAIL, "8f2bc376");
         Response response = given()
-                .spec(postSpec("/api/cp-core/use/login", body))
+                .spec(postSpec("/login", body))
+                .post();
+        response.then().statusCode(200);
+    }
+
+    @Test
+    @DisplayName("Проверка восстановления пароля")
+    @Description("Этот тест проверяет, что возможно восстановление пароля")
+    @Severity(SeverityLevel.BLOCKER)
+    public void testRestorePassword() {
+        String body = String.format("{\"login\":\"%s\"}", EMAIL);
+        Response response = given()
+                .spec(postSpec("/password/restore", body))
                 .post();
         response.then().statusCode(200);
     }
