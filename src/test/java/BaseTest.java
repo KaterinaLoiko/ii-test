@@ -1,25 +1,22 @@
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+
+import static com.codeborne.selenide.Selenide.closeWebDriver;
 
 public class BaseTest {
 
     @BeforeAll
     static void setUp() {
-        // Настройка Selenide
-        Configuration.browser = "chrome"; // Вы можете изменить браузер по умолчанию
-        Configuration.baseUrl = "https://org.1-ofd.ru";
+        Configuration.remote = "http://192.168.53.187:4444";
         Configuration.startMaximized = true;
-        Configuration.headless = false; // Установите true, если хотите запускать в headless режиме
-
-        // Дополнительные настройки, если необходимо
-        // System.setProperty("webdriver.chrome.driver", "path/to/chromedriver");
     }
 
-    @AfterAll
-    static void tearDownAll() {
-        Selenide.closeWebDriver();
+    @AfterEach
+    void tearDownAll() {
+        closeWebDriver();
     }
 }
 
