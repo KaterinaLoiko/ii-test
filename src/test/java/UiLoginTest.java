@@ -81,7 +81,7 @@ public class UiLoginTest extends BaseTest {
         loginPage.clickContinue();
         loginPage.setPassword("8f2bc376");
         loginPage.clickContinue();
-        new AddOrgPage().getAddButton().shouldBe(visible);
+        new AddOrgPage().getAddOrganizationButton().shouldBe(visible);
         String currentUrl = url();
         assertTrue(currentUrl.contains("/user-account-confirmed"));
     }

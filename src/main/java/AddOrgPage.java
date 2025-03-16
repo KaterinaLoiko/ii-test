@@ -4,13 +4,13 @@ import static com.codeborne.selenide.Selenide.*;
 
 public class AddOrgPage {
 
-    private final SelenideElement addButton = $x("//span[text()='Добавить организацию']");
+    private final SelenideElement addOrganizationButton = $x("//span[text()='Добавить организацию']");
 
-    public void clickAdd() {
-        addButton.click();
+    public void clickAddOrganisationButton() {
+        addOrganizationButton.click();
     }
 
-    public SelenideElement getAddButton() {
-        return addButton;
+    public SelenideElement getAddOrganizationButton() {
+        return addOrganizationButton;
     }
 }
